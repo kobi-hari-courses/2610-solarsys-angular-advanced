@@ -1,0 +1,38 @@
+<h1>Number Game</h1>
+<p>I'm thinking of a number between 1 and 100. Can you find it?</p>
+
+@if (phase() === 'in-progress') {
+  @if (lastGuess() !== null) {
+    <div class="last-guess">
+      <span class="label">Your guess was: </span>{{ lastGuess() }} 
+    </div>
+  }
+
+  @if (lastGuessResult() !== null) {
+    <div class="guess-result">
+      <span class="label">Result: </span> {{lastGuessResult()}}
+    </div>
+  }
+
+  <input #numberBox type="number" min="1" max="100" />
+  <button (click)="nextGuess(numberBox.value)">Submit</button>
+
+  @if (history().length > 0) {
+    <h3>History</h3>
+    <ul>
+      @for (record of history(); track $index) {
+        <li>{{ record }}</li>
+      }
+    </ul>
+  }
+} @else if (phase() === 'win') {
+  <h2>You guessed it in {{ guessCount() }}</h2>
+  <h2>The correct guess was {{ secret() }}</h2>
+  <h2>Well done!</h2>
+  <button (click)="reset()">Start Over</button>
+} @else {
+  <h2>Oh no, you did not find it in {{ maxGuesses() }} Guesses,</h2>
+  <h2>The correct guess was {{ secret() }}</h2>
+  <h2>Game Over</h2>
+  <button (click)="reset()">Start Over</button>
+}

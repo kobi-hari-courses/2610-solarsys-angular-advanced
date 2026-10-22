@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    color: rgb(31, 74, 148);
+    text-decoration: underline blueviolet;
+    margin: 0;
+  }
+  p {
+    font-size: 0.8rem;
+    color: rgb(98, 98, 98);
+  }
+
+  .last-guess,
+  .guess-result {
+    font-size: 0.8rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+  }
+
+  .label {
+    color: rgb(98, 98, 98);
+    font-weight: normal;
+  }
+
+  h3 {
+  }
+  ul {
+    border: 1px solid rgb(111, 151, 165);
+    background-color: lightblue;
+    margin: 0;
+    li {
+      list-style: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.8rem;
+  }
+}
