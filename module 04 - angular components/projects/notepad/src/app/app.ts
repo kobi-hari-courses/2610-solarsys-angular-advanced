@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { Title } from './components/title/title' 
+import { Title } from './components/title/title';
+import { StringSelector } from './components/string-selector/string-selector';
 
 @Component({
-  imports: [Title],
+  imports: [Title, StringSelector],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

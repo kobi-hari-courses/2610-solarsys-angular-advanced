@@ -5,34 +5,24 @@
     />
 </div>
 <div class="colors-area">
-  <ul>
-    @for (item of possibleColors(); track $index) {
-      <li 
-        [class.chosen]="item === selectedColor()"
-        (click)="selectColor(item)"
-        >{{ item }}</li>
-    }
-  </ul>
+  <app-string-selector
+    [options]="possibleColors()"
+    [(selectedOption)]="selectedColor"
+  />
 </div>
 
 <div class="fonts-area">
-  <ul>
-    @for (item of possibleFonts(); track $index) {
-      <li [class.chosen]="item === selectedFont()"
-        (click)="selectFont(item)"
-      >{{ item }}</li>
-    }
-  </ul>
+  <app-string-selector
+    [options]="possibleFonts()"
+    [(selectedOption)]="selectedFont"
+  />
 </div>
 
 <div class="sizes-area">
-  <ul>
-    @for (item of possibleSizes(); track $index) {
-      <li [class.chosen]="item === selectedSize()"
-        (click)="selectSize(item)"
-      >{{ item }}</li>
-    }
-  </ul>
+  <app-string-selector
+    [options]="possibleSizes()"
+    [(selectedOption)]="selectedSize"
+  />
 </div>
 
 <div class="text-area">
