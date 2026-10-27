@@ -1,0 +1,35 @@
+:host {
+    flex-grow: 1;
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+        "colors fonts sizes"
+        "text text text";
+
+    .colors-area {
+        grid-area: colors;
+    }
+    .fonts-area {
+        grid-area: fonts;
+    }
+    .sizes-area {
+        grid-area: sizes;
+    }
+    .text-area {
+        grid-area: text;
+    }
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-template-areas: 
+            "colors"
+            "fonts"
+            "sizes"
+            "text";
+
+
+    }
+}
