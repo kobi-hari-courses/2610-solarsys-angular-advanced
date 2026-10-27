@@ -37,4 +37,8 @@ export class App {
   selectSize(value: string) {
     this.selectedSize.set(value);
   }
+
+  whenTripleClicked(duration: number) {
+    console.log(`Title was triple clicked in ${duration}ms`);
+  }
 }

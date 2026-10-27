@@ -1,6 +1,8 @@
 <div class="title-area">
   <app-title caption="Welcome To Notepad" 
-    [color]="selectedColor()"/>
+    [color]="selectedColor()"
+    (tripleClicked)="whenTripleClicked($event)"
+    />
 </div>
 <div class="colors-area">
   <ul>
