@@ -7,18 +7,54 @@
     grid-template-areas: 
         "colors fonts sizes"
         "text text text";
+    gap: 0.5rem;
 
     .colors-area {
         grid-area: colors;
+        display: grid;
     }
     .fonts-area {
         grid-area: fonts;
+        display: grid;
     }
     .sizes-area {
         grid-area: sizes;
+        display: grid;
     }
     .text-area {
         grid-area: text;
+        display: grid;
+
+        textarea {
+            resize: none;
+            padding: 0.5rem;
+        }
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+
+        li {
+            list-style: none;
+            border: 1px solid var(--divider-color);
+            cursor: pointer;
+            user-select: none;
+            padding: 0.3rem;
+            border-radius: 8px;
+            transition: 0.3s;
+
+            &:hover {
+                background-color: var(--hover-color);
+                transform: scale(1.05);
+            }
+
+            &.chosen {
+                background-color: var(--selected-color);
+            }
+        }
+
     }
 
     @media (max-width: 600px) {

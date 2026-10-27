@@ -4,6 +4,12 @@ html, body {
     height: 100%;
 }
 
+:root {
+    --divider-color: rgb(187, 187, 187);
+    --hover-color: rgb(228, 228, 228);
+    --selected-color: rgb(171, 210, 192);
+}
+
 * {
     margin: 0;
     padding: 0;
