@@ -1,7 +1,7 @@
 import { Component, computed, effect, linkedSignal, signal } from '@angular/core';
 import { fakePeople } from './fake-data';
 import { changeItem } from './utils/immutables';
-import { changePersonExperience, selectByName } from './people.helpers';
+import { changePersonExperience, selectByName, changeFirstExperienceOfSelectedPerson } from './people.helpers';
 
 @Component({
   imports: [],
@@ -31,13 +31,8 @@ export class App {
   }
 
   changeFirstRoleToManager() {
-    this.people.update((old) =>
-      changeItem(
-        old,
-        selectByName(this.selectedPerson()),
-        (p) => changePersonExperience(p, 0, 'manager'),
-      ),
-    );
+    this.people.update(
+      (old) => changeFirstExperienceOfSelectedPerson(old, this.selectedPerson(), 'manager'));
   }
 
   // readonly i = signal(0); // c
