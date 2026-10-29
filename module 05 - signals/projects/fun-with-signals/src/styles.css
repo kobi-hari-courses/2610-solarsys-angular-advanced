@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --divider: #ccc;
+    --hover: #f0f0f0;
+    --selected: #b0c8ce;
+    --label-color: #5c5c5c;
+}
