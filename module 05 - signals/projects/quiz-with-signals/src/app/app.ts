@@ -1,9 +1,12 @@
 import { Component, computed, signal } from '@angular/core';
 import { fakeQuestions } from './data/fake-questions';
-import { correctAnswersCount } from './quiz.helpers';
+import { buildReport, correctAnswersCount } from './quiz.helpers';
+import { QuestionPresenter } from './components/question-presenter/question-presenter';
+import { ProgressBar } from './components/progress-bar/progress-bar';
+import { Summary } from './components/summary/summary';
 
 @Component({
-  imports: [],
+  imports: [QuestionPresenter, ProgressBar, Summary],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
@@ -20,5 +23,15 @@ export class App {
   readonly isQuizDone = computed(() => this.questions().length === this.answers().length);
   readonly correctAnswersCount = computed(() => correctAnswersCount(this.questions(), this.answers()));
   readonly score = computed(() => Math.round(this.correctAnswersCount() / this.questions().length * 100));
+  readonly report = computed(() => buildReport(this.questions(), this.answers()));
 
+
+  // action
+  userAnswered(answer: number) {
+    this.answers.update(all => [...all, answer]);
+  }
+
+  restartQuiz() {
+    this.answers.set([]);
+  }
 }

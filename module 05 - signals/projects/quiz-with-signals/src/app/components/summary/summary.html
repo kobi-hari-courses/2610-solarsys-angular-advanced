@@ -1,0 +1,15 @@
+<div class="summary">
+  <h2>Well Done, Quiz is completed</h2>
+  <h3>Your score is {{ score() }}</h3>
+</div>
+
+@for (item of report().items; track $index) {
+  <div class="report-item">
+    <h4>{{ item.question }}</h4>
+    <ul>
+      @for (ans of item.answers; track $index) {
+        <li [class.correct]="ans.isCorrect" [class.selected]="ans.isSelected">{{ ans.answer }}</li>
+      }
+    </ul>
+  </div>
+}
