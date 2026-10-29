@@ -5,11 +5,10 @@
 | Project | Project Description |
 | --- | --- |
 | [notepad](./projects/notepad/) | Builds a notepad interface to practice CSS layout, component inputs, outputs, and model inputs |
-| [quiz-with-signals](./projects/quiz-with-signals/) | Practices separating core quiz state from derived state with signals and helper functions; the application is not complete yet |
 
 ## Summary
 
-In this module, we built two Angular applications. The Notepad project introduced component communication and CSS organization. The Quiz project gave us a chance to apply signals to a larger example by separating the state we store from the values we derive from it.
+In this module, we built the Notepad application. It introduced component communication - input signals, outputs, and model inputs - along with CSS organization, grid layout, computed signals, and host bindings.
 
 ### Organizing CSS and building a responsive layout
 
@@ -23,22 +22,22 @@ body {
 }
 
 :root {
-  --divider: lightgray;
-  --hover: rgb(229, 227, 227);
-  --selected: rgb(166, 228, 195);
+  --divider-color: rgb(187, 187, 187);
+  --hover-color: rgb(228, 228, 228);
+  --selected-color: rgb(171, 210, 192);
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: Segoe UI, Arial, sans-serif;
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 ```
 
 #### CSS custom properties as shared constants
 
-The `--divider`, `--hover`, and `--selected` declarations are **CSS custom properties**. We used them like named constants: instead of repeating color values in multiple component stylesheets, we give each value a meaningful name and refer to it with `var(...)`. For example, the string selector uses `var(--divider)` for its border and `var(--selected)` for the selected option's background. This makes the styles easier to read and lets us update a shared color in one place. Defining them on `:root` makes them available throughout the document through CSS inheritance.
+The `--divider-color`, `--hover-color`, and `--selected-color` declarations are **CSS custom properties**. We used them like named constants: instead of repeating color values in multiple component stylesheets, we give each value a meaningful name and refer to it with `var(...)`. For example, the string selector uses `var(--divider-color)` for each option's border, `var(--hover-color)` for the hover background, and `var(--selected-color)` for the chosen option's background. This makes the styles easier to read and lets us update a shared color in one place. Defining them on `:root` makes them available throughout the document through CSS inheritance.
 
 #### Reset rules, box sizing, and page dimensions
 
@@ -46,7 +45,7 @@ Browsers supply default margins and padding for some elements. Setting both to z
 
 By default, CSS uses `content-box` sizing: a declared width or height applies to the content, and padding and borders are added outside those dimensions. With `box-sizing: border-box`, the declared width and height include the content, padding, and border. That makes element dimensions easier to reason about and helps prevent padding from unexpectedly making an element larger than its allocated space.
 
-The stylesheet sets both `html` and `body` to `100%` width and height so the page can occupy the available viewport dimensions. The `body` then acts as a column flex container, and the Notepad's root component grows to use available space. With `border-box`, the body's `1rem` padding is included within its 100% dimensions rather than added on top of them.
+The stylesheet sets both `html` and `body` to `100%` width and height so the page can occupy the available viewport dimensions. The `body` then acts as a column flex container, and the Notepad's root component grows to use available space. With `border-box`, the body's `0.5rem` padding is included within its 100% dimensions rather than added on top of them.
 
 #### CSS Grid and sizing tracks
 
@@ -70,7 +69,21 @@ In the Notepad, CSS Grid arranges the title, formatting controls, and text area 
 
 `grid-template-rows` defines three rows. The first two use `auto`, so their sizes are based on their contents; the last uses `1fr`, so it takes a share of the remaining available height. `flex-grow: 1` lets the component itself use space provided by its flex parent, giving that final flexible row room to grow. `gap` adds consistent spacing between grid cells.
 
-`grid-template-areas` gives the cells readable names and describes how those cells are arranged: the title and text area each span all three columns, while the color, font, and size controls sit beside one another in the middle row. Child elements are assigned to those areas with `grid-area`. Flexible `fr` tracks use available space instead of requiring fixed pixel widths, and named areas make it straightforward to change the arrangement at a narrower-screen breakpoint. Grid does not automatically turn this particular three-column layout into a one-column layout; a responsive redesign can change the tracks and named areas in a media query.
+`grid-template-areas` gives the cells readable names and describes how those cells are arranged: the title and text area each span all three columns, while the color, font, and size controls sit beside one another in the middle row. Child elements are assigned to those areas with `grid-area`. Flexible `fr` tracks use available space instead of requiring fixed pixel widths, and named areas make it straightforward to rearrange the layout at a narrower-screen breakpoint. Grid does not do that automatically, so the component adds a media query that redefines the tracks and areas for narrow screens:
+
+```css
+@media (max-width: 600px) {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    'colors'
+    'fonts'
+    'sizes'
+    'text';
+}
+```
+
+Below `600px` the same children flow into a single column: the selectors stack on top of each other and the text area sits beneath them. Because the layout is described by named areas, the responsive redesign only needed new track and area definitions - no markup changes.
 
 ### Styling from template state
 
@@ -82,16 +95,16 @@ Angular property bindings connect template properties to expressions in the comp
 
 ```html
 <li
-  (click)="selected.set(item)"
-  [class.chosen]="item === selected()"
+  [class.chosen]="item === selectedOption()"
+  (click)="selectOption(item)"
 >
   {{ item }}
 </li>
 
 <textarea
   [style.color]="selectedColor()"
-  [style.font-family]="selectedFont()"
   [style.font-size]="selectedSize()"
+  [style.font-family]="selectedFont()"
 ></textarea>
 ```
 
@@ -114,26 +127,47 @@ There are two common ways to provide an input value in a template:
 
 ```html
 <app-title
-  caption="Welcome To Notepad App"
+  caption="Welcome To Notepad"
   [color]="selectedColor()"
 />
 ```
 
-Without square brackets, an attribute value is supplied as a static string. Here, `caption="Welcome To Notepad App"` passes that literal text. With square brackets, Angular evaluates the value as a template expression and passes the result. Here, `[color]="selectedColor()"` reads the current value of the `selectedColor` signal, so the title receives the current selection rather than the literal characters `selectedColor()`. Use brackets when passing a variable, signal value, number, boolean, array, object, or other expression; omit them for a fixed string.
+Without square brackets, an attribute value is supplied as a static string. Here, `caption="Welcome To Notepad"` passes that literal text. With square brackets, Angular evaluates the value as a template expression and passes the result. Here, `[color]="selectedColor()"` reads the current value of the `selectedColor` signal, so the title receives the current selection rather than the literal characters `selectedColor()`. Use brackets when passing a variable, signal value, number, boolean, array, object, or other expression; omit them for a fixed string.
 
 #### Computed signals
 
-A **computed signal** represents a value derived from one or more other signals. Create one with `computed(() => ...)`, and read it like any other signal by calling it. In the title component, `inverse` derives a contrasting background from the current color:
+A **computed signal** represents a value derived from one or more other signals. Create one with `computed(() => ...)`, and read it like any other signal by calling it. The `Title` component derives two values from its inputs:
 
 ```typescript
-readonly inverse = computed(() => getContrastingGray(this.color()));
+readonly upperCaption = computed(() => this.caption().toUpperCase());
+
+readonly background = computed(() => getContrastingGray(this.color()));
 ```
 
-Computed signals are **read-only**: callers can read `inverse()`, but cannot set or update its value directly. They are also **lazy** and **cached**. Angular does not run the computation until something reads the computed signal. After it runs, Angular caches the result and returns that cached result on later reads as long as its dependencies have not changed.
+Computed signals are **read-only**: callers can read `background()`, but cannot set or update its value directly. They are also **lazy** and **cached**. Angular does not run the computation until something reads the computed signal. After it runs, Angular caches the result and returns that cached result on later reads as long as its dependencies have not changed.
 
-Angular tracks dependencies while a computed function is running. When the function calls `this.color()`, that signal registers the active computation as a consumer that depends on it. If the color changes, Angular marks the computed value as stale and invalidates its cached result. The next time `inverse()` is read, Angular recalculates it and caches the new result. This automatic dependency tracking keeps derived values up to date without manually coordinating every change.
+Angular tracks dependencies while a computed function is running. When the function calls `this.color()`, that signal registers the active computation as a consumer that depends on it. If the color changes, Angular marks the computed value as stale and invalidates its cached result. The next time `background()` is read, Angular recalculates it and caches the new result. This automatic dependency tracking keeps derived values up to date without manually coordinating every change.
 
-Here, the color helper uses canvas color parsing and relative luminance to choose between a dark and light gray. It demonstrates that computed signals can derive values even when the calculation is more involved than a simple expression.
+Here, the `getContrastingGray` helper uses canvas color parsing and relative luminance to choose between a dark and light gray, so the title's background always contrasts with the selected text color. It demonstrates that computed signals can derive values even when the calculation is more involved than a simple expression.
+
+#### Host bindings
+
+Instead of wrapping its content in an extra element, the `Title` component binds styles and events directly on its **host element** using the `host` metadata of the `@Component` decorator:
+
+```typescript
+@Component({
+  selector: 'app-title',
+  templateUrl: './title.html',
+  styleUrl: './title.css',
+  host: {
+    '[style.color]': 'color()',
+    '[style.background]': 'background()',
+    '(click)': 'whenClicked()'
+  }
+})
+```
+
+`[style.color]` and `[style.background]` are the same style bindings we used in templates, but applied to the `<app-title>` element itself. `(click)` attaches an event listener to the host element, so clicking anywhere on the title invokes the component's `whenClicked()` method. Host bindings keep the component's outer element part of its API without adding wrapper markup.
 
 ### The string-selector component and model inputs
 
@@ -141,39 +175,70 @@ The second component, `StringSelector`, receives an array of options and exposes
 
 ```typescript
 readonly options = input.required<string[]>();
-readonly selected = model('');
+readonly selectedOption = model('');
+
+selectOption(value: string) {
+  this.selectedOption.set(value);
+}
 ```
+
+Unlike a regular input, a model input is **writable** inside the child: clicking an option calls `selectOption`, which sets the model's value. The template renders the options with an `@for` block and marks the chosen one with a class binding.
 
 The parent passes an array of options. `possibleColors()` is an expression that evaluates to an array, so it uses square brackets. The parent also uses two-way binding for the selected value:
 
 ```html
 <app-string-selector
   [options]="possibleColors()"
-  [(selected)]="selectedColor"
+  [(selectedOption)]="selectedColor"
 />
 ```
 
 A model input can be used in three related ways:
 
-1. **As an input:** Bind `[selected]="selectedColor()"` to pass the parent's current value into the child. This sends the value from parent to child. A model input is writable inside the child, but if the parent only binds the input and does not listen for the output, a change made in the child will not update the parent's state.
-2. **As an output:** Listen for `(selectedChange)="selectColor($event)"`. A model input automatically provides a matching `selectedChange` output; when the child updates its model value, it emits the new value. The parent can handle that event and decide what to do with `$event`.
-3. **As two-way binding ("banana in a box"):** Use `[(selected)]="selectedColor"` to combine the input and output behavior. The parent passes its current value down, and when the child changes the selection, Angular propagates the new value back to the parent. Conceptually, this combines `[selected]` with `(selectedChange)` and an assignment of the emitted value.
+1. **As an input:** Bind `[selectedOption]="selectedColor()"` to pass the parent's current value into the child. This sends the value from parent to child. A model input is writable inside the child, but if the parent only binds the input and does not listen for the output, a change made in the child will not update the parent's state.
+2. **As an output:** Listen for `(selectedOptionChange)="selectColor($event)"`. A model input automatically provides a matching `selectedOptionChange` output; when the child updates its model value, it emits the new value. The parent can handle that event and decide what to do with `$event`.
+3. **As two-way binding ("banana in a box"):** Use `[(selectedOption)]="selectedColor"` to combine the input and output behavior. The parent passes its current value down, and when the child changes the selection, Angular propagates the new value back to the parent. Conceptually, this combines `[selectedOption]` with `(selectedOptionChange)` and an assignment of the emitted value.
 
-The project uses the third form so choosing an option in `StringSelector` updates the corresponding signal in the parent. Model inputs are useful when a child is expected to both receive a value and request changes to that same value; use a regular input when data should flow only from parent to child.
+The project uses the third form so choosing an option in `StringSelector` updates the corresponding signal in the parent. The app reuses the same component three times — for colors, fonts, and sizes — each bound to its own signal. Model inputs are useful when a child is expected to both receive a value and request changes to that same value; use a regular input when data should flow only from parent to child.
 
-### Outputs and observable interop
+### Outputs
 
-We discussed outputs as a way for a child component to notify its parent about an event. The Notepad declares an output, and its parent listens for it and receives the emitted value through `$event`:
+An **output** lets a child component notify its parent about an event. The `Title` component declares an output and uses its host `(click)` listener to detect a triple click — it counts clicks, and on the third one emits how many milliseconds passed since the first:
 
 ```typescript
-readonly whatever = output<number>();
+readonly tripleClicked = output<number>();
+
+#clickCount = 0;
+#timeOfFirstClick = 0;
+
+whenClicked() {
+  if (this.#clickCount === 0) {
+    this.#timeOfFirstClick = Date.now();
+  }
+
+  this.#clickCount++;
+
+  if (this.#clickCount === 3) {
+    this.tripleClicked.emit(Date.now() - this.#timeOfFirstClick);
+    this.#clickCount = 0;
+  }
+}
 ```
+
+The parent listens for the event with an event binding and receives the emitted value through `$event`:
 
 ```html
-<app-title (whatever)="whenClickedManyTimes($event)" />
+<app-title
+  caption="Welcome To Notepad"
+  [color]="selectedColor()"
+  (tripleClicked)="whenTripleClicked($event)"
+/>
 ```
 
-We also looked at an advanced case connecting Angular inputs and outputs with RxJS observables. Angular's RxJS interop utilities can convert a signal to an observable with `toObservable` and expose an observable as an output with `outputFromObservable`. This showed how component APIs can work with both signal-based state and observable streams.
+```typescript
+whenTripleClicked(duration: number) {
+  console.log(`Title was triple clicked in ${duration}ms`);
+}
+```
 
-> **Note:** The Notepad currently has the output binding in place, but the `emit` call in the title component is commented out. As it stands, clicking the title does not trigger the parent's callback.
-
+Outputs complete the component communication picture: inputs pass data from parent to child, outputs send events from child to parent, and model inputs combine both for a single shared value.

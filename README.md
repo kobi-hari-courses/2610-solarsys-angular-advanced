@@ -19,3 +19,5 @@ Material for the training sessions. This document includes,
 * [Summary](./module%2004%20-%20angular%20components/README.md)
 
 ## Module 05 - Signals and Functional Reactive Programming
+* [Summary](./module%2005%20-%20signals/README.md)
+* [Exercises](./module%2005%20-%20signals/exercises/README.md)
