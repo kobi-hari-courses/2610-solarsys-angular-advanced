@@ -1,0 +1,38 @@
+<h1>People</h1>
+<ul>
+  @for(person of names(); track $index) {
+    <li 
+      [class.chosen]="person === selectedPerson()"
+      (click)="selectedPerson.set(person)">{{person}}</li>
+  }
+</ul>
+
+@let p = selectedPersonDetails();
+
+@if(p) {
+<div class="selected-person">
+  <label>Name</label>
+  <div class="value">{{p.name}}</div>
+  <label>Email</label>
+  <div class="value">{{p.email}}</div>
+  <label>Age</label>
+  <div class="value">{{p.age}}</div>
+  <h2>Experice</h2>
+  <ul>
+  @for(exp of p.experience; track $index) {
+    <li>
+          worked in {{exp.company}} since {{exp.startDate}} until {{exp.endDate}} as {{exp.role}}
+
+    </li>
+  }
+
+  </ul>
+</div>
+
+}
+
+<div class="tools">
+  <button (click)="changeSelectedEmail()">Change Selected Name</button>
+  <button (click)="changeFirstRoleToManager()">Change First Role To Manager</button>
+</div>
+

@@ -1,0 +1,12 @@
+<h1>The Amazing Quiz</h1>
+@if(isQuizDone()) {
+    <app-summary [score]="score()" [report]="report()"/>
+} @else {
+    <app-progress-bar 
+        [total]="questions().length" 
+        [value]="answers().length"/>
+    <app-question-presenter [question]="currentQuestion()" 
+        (userAnswered)="userAnswered($event)"/>
+}
+
+<button (click)="restartQuiz()">Restart Quiz</button>

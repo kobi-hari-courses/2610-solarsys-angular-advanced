@@ -1,0 +1,52 @@
+:host {
+    flex-grow: 1;
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 
+        "title title title"
+        "colors fonts sizes"
+        "text text text";
+    gap: 0.5rem;
+
+    .title-area {
+        grid-area: title;
+        display: flex;
+        flex-direction: row; 
+    }
+
+    .colors-area {
+        grid-area: colors;
+        display: grid;
+    }
+    .fonts-area {
+        grid-area: fonts;
+        display: grid;
+    }
+    .sizes-area {
+        grid-area: sizes;
+        display: grid;
+    }
+    .text-area {
+        grid-area: text;
+        display: grid;
+
+        textarea {
+            resize: none;
+            padding: 0.5rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-template-areas: 
+            "colors"
+            "fonts"
+            "sizes"
+            "text";
+
+
+    }
+}

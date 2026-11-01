@@ -1,0 +1,8 @@
+  <ul>
+    @for (item of options(); track $index) {
+      <li 
+        [class.chosen]="item === selectedOption()"
+        (click)="selectOption(item)"
+        >{{ item }}</li>
+    }
+  </ul>

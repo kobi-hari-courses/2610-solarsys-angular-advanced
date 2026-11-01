@@ -1,0 +1,34 @@
+<div class="title-area">
+  <app-title caption="Welcome To Notepad" 
+    [color]="selectedColor()"
+    (tripleClicked)="whenTripleClicked($event)"
+    />
+</div>
+<div class="colors-area">
+  <app-string-selector
+    [options]="possibleColors()"
+    [(selectedOption)]="selectedColor"
+  />
+</div>
+
+<div class="fonts-area">
+  <app-string-selector
+    [options]="possibleFonts()"
+    [(selectedOption)]="selectedFont"
+  />
+</div>
+
+<div class="sizes-area">
+  <app-string-selector
+    [options]="possibleSizes()"
+    [(selectedOption)]="selectedSize"
+  />
+</div>
+
+<div class="text-area">
+  <textarea
+    [style.color]="selectedColor()"
+    [style.font-size]="selectedSize()"
+    [style.font-family]="selectedFont()"
+  ></textarea>
+</div>

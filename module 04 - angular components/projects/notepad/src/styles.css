@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+:root {
+    --divider-color: rgb(187, 187, 187);
+    --hover-color: rgb(228, 228, 228);
+    --selected-color: rgb(171, 210, 192);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+body {
+    padding: 0.5rem;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}

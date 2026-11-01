@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+:root {
+    --main-color: #3498db;
+    --main-color-dark: #15547e;
+    --main-color-light: #acd3ee;
+    --secondary-color: #2ecc71;
+    --secondary-color-dark: #147f41;
+    --secondary-color-light: #a4ebc2;
+}

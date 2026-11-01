@@ -1,0 +1,57 @@
+:host {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 
+        "title title"
+        "list content"
+        "tools tools"
+        ;
+    gap: 1rem;
+
+    h1 {
+        grid-area: title;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;   
+        grid-area: list;
+
+        li {
+            list-style-type: none;
+            padding: 0.5rem;
+            border: 1px solid var(--divider);
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--hover);
+            }
+
+            &.chosen {
+                background-color: var(--selected);
+            }
+        }
+    }
+
+    .selected-person {
+        grid-area: content;
+
+        label {
+            display: flex;
+            flex-direction: column;
+            color: var(--label-color);
+            margin-top: 0.25rem;
+        }
+
+        .value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    }
+
+    .tools {
+        grid-area: tools;
+    }
+}
