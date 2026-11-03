@@ -1,0 +1,104 @@
+/* Core Selectors - Atmoic selectors */
+
+/* 1. element selector */
+
+h1 {
+    color: green;
+}
+
+
+/* 2. class selector */
+.x {
+    text-decoration: red underline;
+}
+
+.y {
+    border-left: 3px solid yellow;
+}
+
+/* 3. id selector */
+#second-title {
+    border-bottom: 2px solid blue;
+}
+
+/* 4. attribute selector */
+[title] {
+    background-color: lime;
+}
+
+[type="number"] {
+    background-color: lightblue;
+    border: 1px solid darkblue;
+}
+
+/* 4.1 attribute "contains" string */
+[description*="about"] {
+    color: magenta;   
+}
+
+/* 4.2 attribute begins, or ends with string */
+[description^="some"] {
+    font-weight: bold;
+}
+
+[description$="html"] {
+    text-decoration: blue underline;
+}
+
+/* 4.3 attribute is space seperated list containing this value */
+[keywords~="angular"] {
+    background-color: yellow;
+}
+
+
+/* 5 Universal Selector */
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Combinators */
+/* 1. And combinator */
+
+.x.y {
+    text-decoration: magenta underline;   
+}
+
+input[type="number"] {
+    border-radius: 10px;
+
+}
+
+/* 2. Or combinator */
+input, section {
+    font-size: 18px;
+}
+
+/* 3. Descendant */
+
+.interesting [type="number"] {
+    background-color: yellow;
+}
+
+/* 4. Direct Descendant */
+.main-list>li {
+    color: red;
+}
+
+.inner-list {
+    color: black;
+}
+
+/* 5. General Sibling */
+input~button {
+    border: 2px solid cyan;
+}
+
+/* 6. Direct Sibling */
+.z+button {
+    background-color: pink;
+}
+
+
+div.part-1 button.special[crucial] {
+
+}

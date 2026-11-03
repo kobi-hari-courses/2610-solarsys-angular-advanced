@@ -1,0 +1,14 @@
+{
+  "name": "fun-with-selectors",
+  "version": "1.0.0",
+  "description": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "sirv . --port 3000 --dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "sirv-cli": "^3.0.1"
+  }
+}
