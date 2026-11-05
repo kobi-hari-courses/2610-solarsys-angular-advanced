@@ -1,0 +1,17 @@
+<div 
+    class="status" 
+    (click)="toggle.emit()"
+    >
+  @if (item().isCompleted) {
+    &#10003;
+  }
+</div>
+<div class="caption" 
+    >
+    {{item().caption}}
+</div>
+<button class="danger mini"
+    (click)="delete.emit()"
+    >
+    &#128465;
+</button>

@@ -1,0 +1,37 @@
+:host {
+    display: flex;
+    flex-direction: row;
+
+    .tab {
+        flex-grow: 1;
+        height: 2rem;
+        border-left: 1px solid var(--divider);
+        border-top: 1px solid var(--divider);
+        border-bottom: 1px solid var(--divider);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--hover);
+        }
+
+        &.selected {
+            background-color: var(--selected-bg);
+            color: var(--selected-fg);
+        }
+
+        &:first-child {
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+        &:last-child {
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            border-right: 1px solid var(--divider);
+        }
+    }
+}

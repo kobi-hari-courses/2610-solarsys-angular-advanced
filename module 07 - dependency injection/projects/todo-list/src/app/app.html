@@ -1,0 +1,15 @@
+<app-tabs-strip 
+  [tabs]="tabs()" 
+  [(selected)]="selectedTab"/>
+  
+<app-add-item
+  (added)="todoService.addItem($event)"
+/>
+
+@for(item of todos(); track $index) {
+  <app-todo-item 
+    [item]="item" 
+    (delete)="todoService.removeItem($index)"
+    (toggle)="todoService.toggleItem($index)"
+    />
+}

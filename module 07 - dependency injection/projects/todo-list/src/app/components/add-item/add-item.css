@@ -1,0 +1,9 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+
+    input {
+        flex-grow: 1;
+    }
+}

@@ -1,0 +1,6 @@
+<input type="text" #txtBox
+    (keydown.enter)="added.emit(txtBox.value); txtBox.value = ''; txtBox.focus()"
+>
+<button 
+    (click)="added.emit(txtBox.value); txtBox.value = ''; txtBox.focus()
+    ">+</button>

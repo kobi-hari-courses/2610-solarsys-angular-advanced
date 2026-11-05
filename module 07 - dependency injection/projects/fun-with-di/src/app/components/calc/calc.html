@@ -1,0 +1,9 @@
+<span>Addition id: {{additionService.id}}</span>
+<span>Wrong id: {{wrongService.id}}</span>
+
+<input type="number" #xBox (input)="x.set(xBox.valueAsNumber)">
++
+<input type="number" #yBox (input)="y.set(yBox.valueAsNumber)">
+<button (click)="calc()">=</button>
+
+<span> {{ result() }}</span>

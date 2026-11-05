@@ -1,0 +1,8 @@
+@for(tab of tabs(); track tab) {
+    <div 
+        class="tab" 
+        [class.selected]="tab === selected()"
+        (click)="selected.set(tab)">
+        {{ tab }}
+    </div>
+}
