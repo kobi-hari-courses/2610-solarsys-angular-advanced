@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alex Morgan",
+      "email": "alex@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Sam Taylor",
+      "email": "sam@example.com"
+    },
+    {
+      "id": 3,
+      "name": "Jordan Lee",
+      "email": "jordan@example.com"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Keyboard",
+      "price": 49.99,
+      "inStock": true
+    },
+    {
+      "id": 2,
+      "name": "Mouse",
+      "price": 24.99,
+      "inStock": true
+    },
+    {
+      "id": 3,
+      "name": "Monitor",
+      "price": 199.99,
+      "inStock": false
+    },
+    {
+      "id": 4,
+      "name": "Headphones",
+      "price": 79.99,
+      "inStock": true
+    },
+    {
+      "id": 5,
+      "name": "Webcam",
+      "price": 59.99,
+      "inStock": false
+    }
+  ]
+}
