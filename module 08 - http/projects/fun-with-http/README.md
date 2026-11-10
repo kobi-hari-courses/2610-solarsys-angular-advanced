@@ -14,13 +14,19 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 ## Fake HTTP API
 
-Install dependencies with `npm install`, then start the fake REST server in a separate terminal:
+The fake REST server uses only built-in Node.js modules (no server dependencies).
+All server code, data, and tests are in [server](./server).
+Start it in a separate terminal:
 
 ```bash
 npm run server
 ```
 
-The API runs at `http://localhost:3000` using [db.json](./db.json) as its database.
+The API runs at `http://localhost:3000` using [server/db.json](./server/db.json) as its database.
+Every request, including errors and CORS preflight requests, is delayed by 3 seconds.
+JSON response headers are sent immediately, with the body delayed by 3 seconds.
+This prevents browsers from queuing identical URLs while waiting for cache headers;
+simultaneous requests complete together rather than one every 3 seconds.
 Keep `npm start` running separately for the Angular application.
 CORS is enabled, so Angular can call the API directly from `http://localhost:4200`.
 
@@ -29,14 +35,17 @@ Both `/users` and `/products` support:
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET | `/products` | List all products |
-| GET | `/products/1` | Get a product by ID |
+| GET | `/products/:id` | Get a product by UUID |
 | POST | `/products` | Create a product (ID is generated) |
-| PUT | `/products/1` | Replace a product |
-| PATCH | `/products/1` | Update selected fields |
-| DELETE | `/products/1` | Delete a product |
+| PUT | `/products/:id` | Replace a product |
+| PATCH | `/products/:id` | Update selected fields |
+| DELETE | `/products/:id` | Delete a product |
 
 Use the same paths with `/users` to manage users. Send JSON bodies with
 `Content-Type: application/json` for POST, PUT, and PATCH.
+All user and product IDs are UUID strings. Replace `:id` with the record's UUID,
+for example `/products/576cfc24-2b89-40c3-85cb-8a345a20ee89`.
+POST generates a UUID using Node.js `crypto.randomUUID()`; PUT and PATCH preserve the existing ID.
 
 Examples of filtering, sorting, and pagination:
 
@@ -44,9 +53,12 @@ Examples of filtering, sorting, and pagination:
 - `http://localhost:3000/products?_sort=price&_order=asc`
 - `http://localhost:3000/products?_page=1&_limit=2`
 
-Writes persist to `db.json`, including across server restarts. Edit that file to
+Writes persist to `server/db.json`, including across server restarts. Edit that file to
 change or restore the sample data. This server is for local demonstrations only;
 it has no authentication or application-level validation.
+
+Run the server integration tests with `npm run test:server`. They use a temporary
+database and a separate available port, leaving your data and running server untouched.
 
 ## Code scaffolding
 
