@@ -21,3 +21,6 @@ Material for the training sessions. This document includes,
 ## Module 05 - Signals and Functional Reactive Programming
 * [Summary](./module%2005%20-%20signals/README.md)
 * [Exercises](./module%2005%20-%20signals/exercises/README.md)
+
+## Module 07 - Dependency Injection
+* [Summary](./module%2007%20-%20dependency%20injection/README.md)
