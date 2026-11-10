@@ -24,3 +24,4 @@ Material for the training sessions. This document includes,
 
 ## Module 07 - Dependency Injection
 * [Summary](./module%2007%20-%20dependency%20injection/README.md)
+* [Exercises](./module%2007%20-%20dependency%20injection/exercises/README.md)
