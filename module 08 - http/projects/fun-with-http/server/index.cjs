@@ -84,18 +84,29 @@ function listRecords(records, params, response) {
   return result;
 }
 
-async function sendJson(response, status, body, headOnly = false, delayMs = 3000) {
+async function sendJson(response, status, body, headOnly = false, delayMs = 3000, signal) {
+  signal.throwIfAborted();
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
   // Release the browser's identical-URL cache lock before simulating network latency.
   if (!headOnly) response.flushHeaders();
-  await delay(delayMs);
+  await delay(delayMs, undefined, { signal });
   response.end(headOnly ? undefined : JSON.stringify(body));
 }
 
 function createServer({ dataFile = databasePath } = {}) {
   readDatabase(dataFile);
 
-  return createHttpServer(async (request, response) => {
+  const handler = async (request, response) => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    const cancel = () => {
+      if (!response.writableFinished && !signal.aborted) {
+        controller.abort();
+        server.emit('requestCancelled', request.url);
+      }
+    };
+    request.on('aborted', cancel);
+    response.on('close', cancel);
     response.setHeader('Access-Control-Allow-Origin', '*');
     response.setHeader('Access-Control-Allow-Methods', methods);
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -111,7 +122,7 @@ function createServer({ dataFile = databasePath } = {}) {
 
       if (request.method === 'OPTIONS') {
         response.writeHead(204);
-        await delay(responseDelay);
+        await delay(responseDelay, undefined, { signal });
         response.end();
         return;
       }
@@ -135,6 +146,7 @@ function createServer({ dataFile = databasePath } = {}) {
 
       // Read bodies before loading data so concurrent writes cannot use stale snapshots.
       const body = ['POST', 'PUT', 'PATCH'].includes(method) ? await readBody(request) : undefined;
+      signal.throwIfAborted();
       const database = readDatabase(dataFile);
       let records = database[resource];
       if (resource === 'colors' && id === undefined) {
@@ -154,7 +166,7 @@ function createServer({ dataFile = databasePath } = {}) {
       if (method === 'GET' || headOnly) {
         const result =
           id === undefined ? listRecords(records, url.searchParams, response) : records[index];
-        await sendJson(response, 200, result, headOnly, responseDelay);
+        await sendJson(response, 200, result, headOnly, responseDelay, signal);
         return;
       }
 
@@ -177,23 +189,48 @@ function createServer({ dataFile = databasePath } = {}) {
       }
       writeDatabase(dataFile, database);
       if (status === 201) response.setHeader('Location', `/${resource}/${result.id}`);
-      await sendJson(response, status, result, false, responseDelay);
+      await sendJson(response, status, result, false, responseDelay, signal);
     } catch (error) {
+      if (signal.aborted) return;
       const status = error instanceof HttpError ? error.status : 500;
       if (status === 500) console.error('Request failed:', error);
-      await sendJson(
-        response,
-        status,
-        { error: status === 500 ? 'Internal server error.' : error.message },
-        request.method === 'HEAD',
-        responseDelay,
-      );
+      if (response.headersSent) {
+        response.destroy(error);
+        return;
+      }
+      try {
+        await sendJson(
+          response,
+          status,
+          { error: status === 500 ? 'Internal server error.' : error.message },
+          request.method === 'HEAD',
+          responseDelay,
+          signal,
+        );
+      } catch (sendError) {
+        if (!signal.aborted) {
+          console.error('Unable to send error response:', sendError);
+          response.destroy(sendError);
+        }
+      }
+    } finally {
+      request.off('aborted', cancel);
+      response.off('close', cancel);
     }
-  });
+  };
+  const server = createHttpServer(handler);
+  return server;
 }
 
 if (require.main === module) {
-  const server = createServer();
+  let server;
+  try {
+    server = createServer();
+  } catch (error) {
+    console.error('Unable to load the API database.', error);
+    process.exit(1);
+  }
+  server.on('requestCancelled', (url) => console.log(`Cancelled request: ${url}`));
   server.on('error', (error) => {
     console.error('Unable to start the fake API:', error);
     process.exitCode = 1;

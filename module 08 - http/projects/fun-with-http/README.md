@@ -16,13 +16,15 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 The fake REST server uses only built-in Node.js modules (no server dependencies).
 All server code, data, and tests are in [server](./server).
-Start it in a separate terminal:
+Start the API in a separate terminal:
 
 ```bash
 npm run server
 ```
 
 The API runs at `http://localhost:3000` using [server/db.json](./server/db.json) as its database.
+It uses HTTP/1.1 with request cancellation; no certificates or HTTPS setup are needed.
+Angular's data service uses the HTTP URL. Restart the API after updating it.
 User and product requests retain their 3-second delay. Color requests have an
 independently randomized delay of 1,000-4,000 milliseconds (including errors and preflight).
 JSON response headers are sent immediately, with the body delayed.
@@ -78,6 +80,17 @@ out of order. Other API endpoints are unchanged.
 
 To regenerate the color collection, run `node server/seed-colors.cjs`.
 This replaces colors (including their UUIDs), preserving users and products.
+
+### Request cancellation
+
+Aborting `fetch` with `AbortController`, or unsubscribing from Angular `HttpClient`,
+cancels the request. The server detects the HTTP/1.1 client disconnect,
+aborts the pending delay, and logs `Cancelled request: ...`.
+It does not attempt to send a response on the closed connection.
+Other concurrent requests continue normally.
+
+Cancellation does not undo a POST, PUT, PATCH, or DELETE already persisted before
+the delayed response. Tests verify cancellation and completion of other concurrent requests.
 
 ## Code scaffolding
 

@@ -1,10 +1,12 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { Component, computed, debounced, inject, resource, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { User } from './models/user.model';
 import { DataService } from './services/data.service';
 import { Color } from './models/color.model';
 import { ColorPresenter } from './components/color-presenter/color-presenter';
 import { firstValueFrom } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { debounce } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +17,14 @@ import { firstValueFrom } from 'rxjs';
 export class App {
   readonly #dataService = inject(DataService);
   readonly searchText = signal('');
-  readonly colorsResource = resource({
-    params: this.searchText,
-    loader: (ctx) => this.#dataService.searchColorsWithPromise(ctx.params, ctx.abortSignal)
+  readonly searchTrigger = debounced(this.searchText, 500);
+
+  readonly colorsResource = rxResource({
+    params: this.searchTrigger.value,
+    stream: (ctx) => this.#dataService.searchColors(ctx.params)
   });
+
+    readonly busy = computed(() => this.searchTrigger.isLoading() || this.colorsResource.isLoading());
 
 
   // readonly isBusy = signal(false);

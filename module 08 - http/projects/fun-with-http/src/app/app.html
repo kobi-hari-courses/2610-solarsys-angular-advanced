@@ -1,5 +1,6 @@
 <input type="search" #searchBox (input)="searchText.set(searchBox.value)">
-@if(colorsResource.isLoading()) {
+<h1>Status: {{colorsResource.status()}}</h1>
+@if(busy()) {
     <div>
       loading...
     </div>

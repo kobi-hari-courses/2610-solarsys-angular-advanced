@@ -6,6 +6,29 @@ const { join } = require('node:path');
 const { test } = require('node:test');
 const { createServer } = require('./index.cjs');
 const crypto = require('node:crypto');
+test('HTTP cancellation stops a pending delay while other requests complete', async (t) => {
+  const server = createServer();
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  const controller = new AbortController();
+  const cancelled = once(server, 'requestCancelled', { signal: AbortSignal.timeout(5000) });
+  const response = await fetch(`${origin}/colors?text=blue`, { signal: controller.signal });
+  assert.equal(response.status, 200);
+  const body = response.json();
+  const rejected = assert.rejects(body, { name: 'AbortError' });
+  const otherRequest = fetch(`${origin}/users`).then(async (result) => {
+    assert.equal(result.status, 200);
+    assert.ok(Array.isArray(await result.json()));
+  });
+  const cancellationStart = performance.now();
+  controller.abort();
+  await rejected;
+  assert.deepEqual(await cancelled, ['/colors?text=blue']);
+  assert.ok(performance.now() - cancellationStart < 1000);
+  await otherRequest;
+});
 
 test('1,000 unique colors support text search and random delay boundaries', async (t) => {
   const { colors } = JSON.parse(readFileSync(join(__dirname, 'db.json'), 'utf8'));
