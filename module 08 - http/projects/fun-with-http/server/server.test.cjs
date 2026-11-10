@@ -5,6 +5,67 @@ const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { test } = require('node:test');
 const { createServer } = require('./index.cjs');
+const crypto = require('node:crypto');
+
+test('1,000 unique colors support text search and random delay boundaries', async (t) => {
+  const { colors } = JSON.parse(readFileSync(join(__dirname, 'db.json'), 'utf8'));
+  assert.equal(colors.length, 1000);
+  for (const key of ['id', 'name']) {
+    assert.equal(new Set(colors.map((color) => color[key])).size, 1000);
+  }
+  assert.equal(new Set(colors.map(({ r, g, b }) => `${r},${g},${b}`)).size, 1000);
+  for (const color of colors) {
+    assert.match(
+      color.id,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    );
+    assert.ok(color.name.length > 0 && color.description.length > 0);
+    for (const channel of [color.r, color.g, color.b]) {
+      assert.ok(Number.isInteger(channel) && channel >= 0 && channel <= 255);
+    }
+  }
+  const server = createServer();
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  let selectedDelay = 1000;
+  t.mock.method(crypto, 'randomInt', (min, max) => {
+    assert.equal(min, 1000);
+    assert.equal(max, 4001);
+    return selectedDelay;
+  });
+
+  const cases = [
+    ['', colors],
+    ['?text=', colors],
+    ['?text=%20%20', colors],
+    ['?text=%20bLuE%20', colors.filter((color) => /blue/i.test(color.name + color.description))],
+    ['?text=lue', colors.filter((color) => /lue/i.test(color.name + color.description))],
+    ['?text=saturation', colors],
+    ['?text=not-a-color-%26%3F', []],
+  ];
+  assert.ok(cases[3][1].length > 0 && cases[3][1].length < 1000);
+  for (selectedDelay of [1000, 4000]) {
+    const batchStart = performance.now();
+    await Promise.all(
+      cases.map(async ([query, expected]) => {
+        const start = performance.now();
+        const response = await fetch(`${base}/colors${query}`);
+        assert.equal(response.status, 200);
+        assert.equal(response.headers.get('access-control-allow-origin'), '*');
+        assert.ok(performance.now() - start < 900, 'Headers must not wait for the color delay');
+        assert.deepEqual(await response.json(), expected);
+        const elapsed = performance.now() - start;
+        assert.ok(elapsed >= selectedDelay && elapsed < selectedDelay + 1000, `${elapsed}ms`);
+      }),
+    );
+    assert.ok(
+      performance.now() - batchStart < selectedDelay + 1000,
+      'Search requests must overlap',
+    );
+  }
+});
 
 test('fake API preserves CRUD, persistence, queries, CORS, and a 3-second delay', async (t) => {
   const directory = mkdtempSync(join(tmpdir(), 'fake-http-test-'));
@@ -59,7 +120,12 @@ test('fake API preserves CRUD, persistence, queries, CORS, and a 3-second delay'
       const original = initial[resource];
       assert.deepEqual((await request(`/${resource}`)).body, original);
       assert.deepEqual((await request(`/${resource}/${original[0].id}`)).body, original[0]);
-      const created = await request(`/${resource}`, 'POST', { name: 'Test', extra: true, id: 123 }, 201);
+      const created = await request(
+        `/${resource}`,
+        'POST',
+        { name: 'Test', extra: true, id: 123 },
+        201,
+      );
       const id = created.body.id;
       assert.match(id, uuidPattern);
       assert.ok(!ids.includes(id));

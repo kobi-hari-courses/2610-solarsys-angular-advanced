@@ -23,8 +23,9 @@ npm run server
 ```
 
 The API runs at `http://localhost:3000` using [server/db.json](./server/db.json) as its database.
-Every request, including errors and CORS preflight requests, is delayed by 3 seconds.
-JSON response headers are sent immediately, with the body delayed by 3 seconds.
+User and product requests retain their 3-second delay. Color requests have an
+independently randomized delay of 1,000-4,000 milliseconds (including errors and preflight).
+JSON response headers are sent immediately, with the body delayed.
 This prevents browsers from queuing identical URLs while waiting for cache headers;
 simultaneous requests complete together rather than one every 3 seconds.
 Keep `npm start` running separately for the Angular application.
@@ -59,6 +60,24 @@ it has no authentication or application-level validation.
 
 Run the server integration tests with `npm run test:server`. They use a temporary
 database and a separate available port, leaving your data and running server untouched.
+
+### Color search
+
+The database contains 1,000 colors, each with a UUID `id`, a unique `name`,
+integer `r`, `g`, `b` channels (0-255), and a short `description`.
+
+- `GET http://localhost:3000/colors?text=blue` searches names and descriptions.
+- Matching is case-insensitive and uses partial text; surrounding whitespace is ignored.
+- Missing, empty, or whitespace-only `text` returns all 1,000 colors.
+- No matches returns an empty array, `[]`.
+- Encode search text with `encodeURIComponent` or Angular's `HttpParams`.
+- Colors are read-only; `GET /colors/:id` also retrieves a color by UUID.
+
+Each concurrent color request has its own random delay, so responses may arrive
+out of order. Other API endpoints are unchanged.
+
+To regenerate the color collection, run `node server/seed-colors.cjs`.
+This replaces colors (including their UUIDs), preserving users and products.
 
 ## Code scaffolding
 

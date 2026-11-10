@@ -1,12 +1,13 @@
 const { createServer: createHttpServer } = require('node:http');
-const { randomUUID } = require('node:crypto');
+const crypto = require('node:crypto');
+const { randomUUID } = crypto;
 const { readFileSync, writeFileSync, renameSync } = require('node:fs');
 const { join } = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
 
 const databasePath = join(__dirname, 'db.json');
 const methods = 'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS';
-const resources = new Set(['users', 'products']);
+const resources = new Set(['users', 'products', 'colors']);
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -18,7 +19,7 @@ class HttpError extends Error {
 function readDatabase(path) {
   const database = JSON.parse(readFileSync(path, 'utf8'));
   if (!database || ![...resources].every((resource) => Array.isArray(database[resource]))) {
-    throw new Error('Database must contain users and products arrays.');
+    throw new Error('Database must contain users, products, and colors arrays.');
   }
   return database;
 }
@@ -83,11 +84,11 @@ function listRecords(records, params, response) {
   return result;
 }
 
-async function sendJson(response, status, body, headOnly = false) {
+async function sendJson(response, status, body, headOnly = false, delayMs = 3000) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
   // Release the browser's identical-URL cache lock before simulating network latency.
   if (!headOnly) response.flushHeaders();
-  await delay(3000);
+  await delay(delayMs);
   response.end(headOnly ? undefined : JSON.stringify(body));
 }
 
@@ -101,24 +102,32 @@ function createServer({ dataFile = databasePath } = {}) {
     response.setHeader('Access-Control-Expose-Headers', 'X-Total-Count, Location');
     response.setHeader('Cache-Control', 'no-store');
 
+    let responseDelay = 3000;
     try {
+      const url = new URL(request.url, 'http://localhost:3000');
+      const parts = url.pathname.split('/').filter(Boolean);
+      const [resource, id] = parts;
+      if (resource === 'colors') responseDelay = crypto.randomInt(1000, 4001);
+
       if (request.method === 'OPTIONS') {
         response.writeHead(204);
-        await delay(3000);
+        await delay(responseDelay);
         response.end();
         return;
       }
 
-      const url = new URL(request.url, 'http://localhost:3000');
-      const parts = url.pathname.split('/').filter(Boolean);
-      const [resource, id] = parts;
       if (!resources.has(resource) || parts.length > 2) {
         throw new HttpError(404, 'Resource not found.');
       }
 
       const method = request.method;
       const headOnly = method === 'HEAD';
-      const allowed = id ? ['GET', 'HEAD', 'PUT', 'PATCH', 'DELETE'] : ['GET', 'HEAD', 'POST'];
+      const allowed =
+        resource === 'colors'
+          ? ['GET', 'HEAD']
+          : id
+            ? ['GET', 'HEAD', 'PUT', 'PATCH', 'DELETE']
+            : ['GET', 'HEAD', 'POST'];
       if (!allowed.includes(method)) {
         response.setHeader('Allow', [...allowed, 'OPTIONS'].join(', '));
         throw new HttpError(405, 'Method not allowed for this resource.');
@@ -127,7 +136,16 @@ function createServer({ dataFile = databasePath } = {}) {
       // Read bodies before loading data so concurrent writes cannot use stale snapshots.
       const body = ['POST', 'PUT', 'PATCH'].includes(method) ? await readBody(request) : undefined;
       const database = readDatabase(dataFile);
-      const records = database[resource];
+      let records = database[resource];
+      if (resource === 'colors' && id === undefined) {
+        const text = (url.searchParams.get('text') ?? '').trim().toLowerCase();
+        records = records.filter(
+          (color) =>
+            color.name.toLowerCase().includes(text) ||
+            color.description.toLowerCase().includes(text),
+        );
+        url.searchParams.delete('text');
+      }
       const index = id === undefined ? -1 : records.findIndex((record) => record.id === id);
       if (id !== undefined && index === -1) {
         throw new HttpError(404, 'Record not found.');
@@ -136,7 +154,7 @@ function createServer({ dataFile = databasePath } = {}) {
       if (method === 'GET' || headOnly) {
         const result =
           id === undefined ? listRecords(records, url.searchParams, response) : records[index];
-        await sendJson(response, 200, result, headOnly);
+        await sendJson(response, 200, result, headOnly, responseDelay);
         return;
       }
 
@@ -159,7 +177,7 @@ function createServer({ dataFile = databasePath } = {}) {
       }
       writeDatabase(dataFile, database);
       if (status === 201) response.setHeader('Location', `/${resource}/${result.id}`);
-      await sendJson(response, status, result);
+      await sendJson(response, status, result, false, responseDelay);
     } catch (error) {
       const status = error instanceof HttpError ? error.status : 500;
       if (status === 500) console.error('Request failed:', error);
@@ -168,6 +186,7 @@ function createServer({ dataFile = databasePath } = {}) {
         status,
         { error: status === 500 ? 'Internal server error.' : error.message },
         request.method === 'HEAD',
+        responseDelay,
       );
     }
   });
@@ -180,7 +199,7 @@ if (require.main === module) {
     process.exitCode = 1;
   });
   server.listen(3000, 'localhost', () => {
-    console.log('Fake API: http://localhost:3000 (3-second delay per request)');
+    console.log('Fake API: http://localhost:3000 (colors: 1-4 seconds; users/products: 3 seconds)');
   });
 }
 
