@@ -5,6 +5,9 @@
 // The server is read-only (GET). All data is loaded into memory at startup,
 // and every request handler is asynchronous, so the server handles any number
 // of concurrent requests - the artificial delay never blocks other requests.
+// Requests cancelled by the client (for example, when Angular's HttpClient
+// unsubscribes because the selection changed) are detected: the delay is
+// aborted and the response is dropped.
 
 const { createServer } = require('node:http');
 const { readFileSync } = require('node:fs');
@@ -122,6 +125,13 @@ function sendJson(response, status, body) {
 }
 
 const server = createServer(async (request, response) => {
+  // If the client disconnects before the response was sent (a cancelled
+  // request), abort the artificial delay and drop the response.
+  const cancelled = new AbortController();
+  response.on('close', () => {
+    if (!response.writableFinished) cancelled.abort();
+  });
+
   try {
     if (request.method === 'OPTIONS') {
       response.writeHead(204, corsHeaders);
@@ -140,13 +150,18 @@ const server = createServer(async (request, response) => {
 
     const body = handleRequest(segments[0], segments[1], url.searchParams);
 
-    // A small artificial delay so loading states are visible in the app.
-    // The delay is awaited, not slept, so concurrent requests are unaffected.
-    await delay(300 + Math.random() * 500);
+    // A random artificial delay of 1-5 seconds so loading states are clearly
+    // visible in the app. The delay is awaited, not slept, so concurrent
+    // requests are unaffected. A client abort interrupts the delay right away.
+    await delay(1000 + Math.random() * 4000, undefined, { signal: cancelled.signal });
 
     sendJson(response, 200, body);
     console.log(`GET ${url.pathname}${url.search} -> ${Array.isArray(body) ? body.length + ' records' : 'one record'}`);
   } catch (error) {
+    if (cancelled.signal.aborted || error?.code === 'ABORT_ERR') {
+      console.log(`GET ${request.url} -> cancelled by client`);
+      return;
+    }
     if (error instanceof HttpError) {
       sendJson(response, error.status, { error: error.message });
     } else {

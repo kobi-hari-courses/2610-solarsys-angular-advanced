@@ -20,8 +20,10 @@ node server/index.cjs
 ```
 
 The server listens on `http://localhost:3000` with CORS enabled. Every
-response has a small artificial delay (300-800 ms) so loading states are
-visible in the app.
+response has a random artificial delay (1-5 seconds) so loading states are
+visible in the app. Cancelled requests (the client aborts or unsubscribes
+before the response is sent) are detected: the delay is interrupted, the
+response is dropped, and the server logs the request as cancelled.
 
 ## Endpoints
 

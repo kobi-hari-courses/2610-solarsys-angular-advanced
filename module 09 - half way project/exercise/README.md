@@ -81,7 +81,7 @@ npm run server
 
 (or `node server/index.cjs`)
 
-The server listens on `http://localhost:3000`. CORS is enabled, so the Angular app can call it directly. Responses have a small artificial delay, so you can see your loading states.
+The server listens on `http://localhost:3000`. CORS is enabled, so the Angular app can call it directly. Every response has a random artificial delay of 1-5 seconds, so you can see your loading states.
 
 | Method | Path | Returns |
 | --- | --- | --- |
