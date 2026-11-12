@@ -25,3 +25,10 @@ Material for the training sessions. This document includes,
 ## Module 07 - Dependency Injection
 * [Summary](./module%2007%20-%20dependency%20injection/README.md)
 * [Exercises](./module%2007%20-%20dependency%20injection/exercises/README.md)
+
+## Module 08 - HTTP
+* [Summary](./module%2008%20-%20http/README.md)
+
+## Module 09 - Half-Way Project
+* [Summary](./module%2009%20-%20half%20way%20project/README.md)
+* [Exercise: Solar Dashboard](./module%2009%20-%20half%20way%20project/exercise/README.md)
