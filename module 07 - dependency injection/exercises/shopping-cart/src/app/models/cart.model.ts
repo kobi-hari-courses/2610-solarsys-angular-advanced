@@ -6,3 +6,7 @@ export interface CartItem {
 export interface Cart {
     readonly items: CartItem[];
 }
+
+export const EMPTY_CART: Cart = {
+    items: []
+}
