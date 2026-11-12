@@ -1,0 +1,108 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620" role="img" aria-labelledby="title desc">
+  <title id="title">Solar Dashboard page with the period bar marked</title>
+  <desc id="desc">The complete dashboard page. A green outline marks the period bar with five period ranges.</desc>
+  <rect width="1100" height="620" fill="#fff"/>
+  <path d="M0 64H1100" stroke="#d7dfe3"/>
+  <path d="M240 64V620" stroke="#d7dfe3"/>
+  <g font-family="Arial, sans-serif">
+    <text x="32" y="41" font-size="24" font-weight="700" fill="#25313c">Solar Dashboard</text>
+    <rect x="830" y="15" width="238" height="34" rx="5" fill="#fff" stroke="#d7dfe3"/>
+    <text x="846" y="37" font-size="14" fill="#25313c">Helios Energy</text>
+    <path d="m1042 29 6 6 6-6" fill="none" stroke="#6a7781" stroke-width="2"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="24" y="100" font-size="16" font-weight="700" fill="#25313c">Sites</text>
+    <text x="24" y="132" font-size="11" letter-spacing="1" fill="#6a7781">NORTH</text>
+    <rect x="16" y="140" width="208" height="32" rx="5" fill="#dff0ef"/>
+    <text x="30" y="161" font-size="13" font-weight="700" fill="#0e5a56">Galil Heights</text>
+    <text x="30" y="195" font-size="13" fill="#25313c">Golan Ridge</text>
+    <text x="24" y="232" font-size="11" letter-spacing="1" fill="#6a7781">CENTER</text>
+    <text x="30" y="261" font-size="13" fill="#25313c">Sharon Park</text>
+    <text x="30" y="295" font-size="13" fill="#25313c">Ayalon Fields</text>
+    <text x="24" y="332" font-size="11" letter-spacing="1" fill="#6a7781">SOUTH</text>
+    <text x="30" y="361" font-size="13" fill="#25313c">Negev One</text>
+    <text x="30" y="395" font-size="13" fill="#25313c">Arava Sun</text>
+    <text x="24" y="432" font-size="11" letter-spacing="1" fill="#6a7781">EAST</text>
+    <text x="30" y="461" font-size="13" fill="#25313c">Jordan Valley</text>
+    <text x="24" y="498" font-size="11" letter-spacing="1" fill="#6a7781">WEST</text>
+    <text x="30" y="527" font-size="13" fill="#25313c">Coastal Dunes</text>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="13">
+    <rect x="264" y="88" width="86" height="34" rx="5" fill="#16847f"/>
+    <text x="280" y="110" font-weight="700" fill="#fff">All time</text>
+    <rect x="362" y="88" width="124" height="34" rx="5" fill="#f4f6f7"/>
+    <text x="378" y="110" fill="#25313c">Last 3 months</text>
+    <rect x="498" y="88" width="196" height="34" rx="5" fill="#f4f6f7"/>
+    <text x="514" y="110" fill="#25313c">Same 3 months last year</text>
+    <rect x="706" y="88" width="104" height="34" rx="5" fill="#f4f6f7"/>
+    <text x="722" y="110" fill="#25313c">Last month</text>
+    <rect x="822" y="88" width="172" height="34" rx="5" fill="#f4f6f7"/>
+    <text x="838" y="110" fill="#25313c">This month last year</text>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="264" y="172" font-size="18" font-weight="700" fill="#25313c">Summary</text>
+    <rect x="264" y="188" width="189" height="96" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <text x="280" y="216" font-size="12" fill="#6a7781">Total energy</text>
+    <text x="280" y="250" font-size="24" font-weight="700" fill="#25313c">12,480</text>
+    <text x="280" y="270" font-size="12" fill="#6a7781">kWh</text>
+    <rect x="469" y="188" width="189" height="96" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <text x="485" y="216" font-size="12" fill="#6a7781">Sunlight time</text>
+    <text x="485" y="250" font-size="24" font-weight="700" fill="#25313c">3,120</text>
+    <text x="485" y="270" font-size="12" fill="#6a7781">hours</text>
+    <rect x="674" y="188" width="189" height="96" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <text x="690" y="216" font-size="12" fill="#6a7781">Energy per hour</text>
+    <text x="690" y="250" font-size="24" font-weight="700" fill="#16847f">4.0</text>
+    <text x="690" y="270" font-size="12" fill="#6a7781">kWh per sunlight hour</text>
+    <rect x="879" y="188" width="189" height="96" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <text x="895" y="216" font-size="12" fill="#6a7781">Washes</text>
+    <text x="895" y="250" font-size="24" font-weight="700" fill="#25313c">18</text>
+    <text x="895" y="270" font-size="12" fill="#6a7781">in this period</text>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="264" y="336" font-size="18" font-weight="700" fill="#25313c">Washes</text>
+    <rect x="264" y="352" width="330" height="216" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <text x="284" y="384" font-size="13" fill="#25313c">Aug 28, 2026</text>
+    <path d="M284 396H574" stroke="#d7dfe3"/>
+    <text x="284" y="422" font-size="13" fill="#25313c">Aug 14, 2026</text>
+    <path d="M284 434H574" stroke="#d7dfe3"/>
+    <text x="284" y="460" font-size="13" fill="#25313c">Jul 30, 2026</text>
+    <path d="M284 472H574" stroke="#d7dfe3"/>
+    <text x="284" y="498" font-size="13" fill="#25313c">Jul 16, 2026</text>
+    <path d="M284 510H574" stroke="#d7dfe3"/>
+    <text x="284" y="536" font-size="13" fill="#25313c">Jul 2, 2026</text>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="610" y="336" font-size="18" font-weight="700" fill="#25313c">Efficiency</text>
+    <rect x="610" y="352" width="458" height="216" rx="6" fill="#fff" stroke="#d7dfe3"/>
+    <g font-size="12" fill="#6a7781">
+      <text x="630" y="378">Day</text>
+      <text x="830" y="378" text-anchor="end">Sunlight (h)</text>
+      <text x="950" y="378" text-anchor="end">Energy (kWh)</text>
+      <text x="1048" y="378" text-anchor="end">kWh / h</text>
+    </g>
+    <path d="M630 388H1048" stroke="#d7dfe3"/>
+    <g font-size="13" fill="#25313c">
+      <text x="630" y="412">Jul 14, 2026</text>
+      <text x="830" y="412" text-anchor="end">11.2</text>
+      <text x="950" y="412" text-anchor="end">61.6</text>
+      <text x="1048" y="412" text-anchor="end" font-weight="700" fill="#16847f">5.5</text>
+      <text x="630" y="446">Jun 2, 2026</text>
+      <text x="830" y="446" text-anchor="end">10.8</text>
+      <text x="950" y="446" text-anchor="end">58.3</text>
+      <text x="1048" y="446" text-anchor="end" font-weight="700" fill="#16847f">5.4</text>
+      <text x="630" y="480">Aug 21, 2026</text>
+      <text x="830" y="480" text-anchor="end">11.5</text>
+      <text x="950" y="480" text-anchor="end">59.8</text>
+      <text x="1048" y="480" text-anchor="end" font-weight="700" fill="#16847f">5.2</text>
+      <text x="630" y="514">Jul 3, 2026</text>
+      <text x="830" y="514" text-anchor="end">10.1</text>
+      <text x="950" y="514" text-anchor="end">51.5</text>
+      <text x="1048" y="514" text-anchor="end" font-weight="700" fill="#16847f">5.1</text>
+      <text x="630" y="548">May 19, 2026</text>
+      <text x="830" y="548" text-anchor="end">9.6</text>
+      <text x="950" y="548" text-anchor="end">47.0</text>
+      <text x="1048" y="548" text-anchor="end" font-weight="700" fill="#16847f">4.9</text>
+    </g>
+  </g>
+  <rect x="256" y="80" width="746" height="50" rx="8" fill="none" stroke="#16847f" stroke-width="3"/>
+</svg>
