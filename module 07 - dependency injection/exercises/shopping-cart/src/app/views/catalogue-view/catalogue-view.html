@@ -11,7 +11,9 @@
 <div class="products">
   <div class="scrollable">
     @for (product of products(); track product.id) {
-      <app-product-item [product]="product" />
+      <app-product-item [product]="product" 
+        (addToCart)="cartService.addProductToCart(product.id)"
+      />
     }
   </div>
 </div>

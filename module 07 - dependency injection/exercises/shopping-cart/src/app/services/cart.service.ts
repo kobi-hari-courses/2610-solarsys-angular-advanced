@@ -1,4 +1,4 @@
-import { computed, inject, Service, signal } from "@angular/core";
+import { computed, effect, inject, Service, signal } from "@angular/core";
 import { EMPTY_CART } from "../models/cart.model";
 import { CatalgueService } from "./catalogue.service";
 import { buildCartVm } from "../view-models/cart.vm";
@@ -33,5 +33,11 @@ export class CartService {
     decrementProductInCart(productId: string) {
         this.#cart.update(cart => decrementProductInCart(cart, productId))
 
+    }
+
+    constructor() {
+        effect(() => {
+            console.log('Cart', this.#cart());
+        })
     }
 }
