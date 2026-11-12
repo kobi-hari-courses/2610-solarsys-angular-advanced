@@ -1,0 +1,41 @@
+:host {
+  flex-grow: 1;
+  display: grid;
+  padding: 2rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr;
+  grid-template-areas:
+    'header header'
+    'catalogue cart'
+    'catalogue summary';
+  gap: 1rem;
+
+  h1 {
+    grid-area: header;
+    padding: 1rem;
+    border-bottom: 1px solid var(--divider-color);
+  }
+
+  h2 {
+    .sub-text {
+      color: var(--sub-text-color);
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+  }
+  .catalogue-area {
+    grid-area: catalogue;
+    display: flex;
+    flex-direction: column;
+  }
+  .cart-area {
+    grid-area: cart;
+    display: flex;
+    flex-direction: column;
+  }
+  .summary-area {
+    grid-area: summary;
+    display: flex;
+    flex-direction: column;
+  }
+}

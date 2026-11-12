@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, computed, inject } from '@angular/core';
+import { CatalogueView } from './views/catalogue-view/catalogue-view';
+import { SummaryView } from './views/summary-view/summary-view';
+import { CartView } from './views/cart-view/cart-view';
+import { CartService } from './services/cart.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [CatalogueView, SummaryView, CartView],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('shopping-cart');
+  readonly #cartService = inject(CartService);
+  readonly cartCount = computed(() => this.#cartService.cartVm().quantity);
 }
