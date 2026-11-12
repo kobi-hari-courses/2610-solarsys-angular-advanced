@@ -1,1 +1,17 @@
-<p>catalogue-view works!</p>
+<select
+  [value]="selectedFilter()"
+  #filterBox
+  (change)="catalogueService.setSelectedFilter(filterBox.value)"
+>
+  @for (filter of filters(); track filter.name) {
+    <option [value]="filter.name">{{ filter.name }}</option>
+  }
+</select>
+
+<div class="products">
+  <div class="scrollable">
+    @for (product of products(); track product.id) {
+      <app-product-item [product]="product" />
+    }
+  </div>
+</div>

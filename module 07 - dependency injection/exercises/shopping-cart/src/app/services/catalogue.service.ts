@@ -1,4 +1,4 @@
-import { computed, Service, signal } from "@angular/core";
+import { computed, effect, Service, signal } from "@angular/core";
 import { ALL_PRODUCTS } from "../data/all-products";
 import { distinct } from "../utils/math-utils";
 import { Product } from "../models/product.model";
@@ -37,5 +37,11 @@ export class CatalgueService {
         if (this.filters().some(f => f.name === filterName)) {
             this.#selectedFilterName.set(filterName);
         }
+    }
+
+    constructor() {
+        effect(() => {
+            console.log('selected filter is ', this.selectedFilterName());
+        });
     }
 }

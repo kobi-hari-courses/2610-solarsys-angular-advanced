@@ -1,0 +1,32 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    min-width: 400px;
+
+    .texts {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 300px;
+        .name{
+            height: 2.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .category{
+            height: 1rem;
+            color: var(--sub-text-color);
+        }
+    }
+
+    .price {
+        align-self: center;
+        font-weight: bold;
+    }
+
+    button {
+        align-self: center;
+        min-width: max-content;
+    }
+}
