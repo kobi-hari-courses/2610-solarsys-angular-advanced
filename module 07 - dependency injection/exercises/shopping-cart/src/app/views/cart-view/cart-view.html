@@ -1,1 +1,50 @@
-<p>cart-view works!</p>
+<table>
+    <thead>
+        <tr>
+            <th>
+                product
+            </th>
+            <th>
+                Qty
+            </th>
+            <th>
+                Total
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(item of vm().items; track item.productId) {
+            <tr>
+                <td>
+                    {{item.productName}}
+                </td>
+                <td>
+                    <app-number-spinner 
+                    [value]="item.quantity"
+                        (increment)="cartService.incrementProductInCart(item.productId)"
+                        (decrement)="cartService.decrementProductInCart(item.productId)"
+                        />
+                </td>
+                <td>
+                    {{item.total | currency}}
+                </td>
+                <td>
+                    <button (click)="cartService.removeProductFromCart(item.productId)">Remove</button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Subtotal</td>
+        <td>{{vm().subtotal | currency}}</td>
+    </tr>
+    <tfoot>
+
+    </tfoot>
+</table>

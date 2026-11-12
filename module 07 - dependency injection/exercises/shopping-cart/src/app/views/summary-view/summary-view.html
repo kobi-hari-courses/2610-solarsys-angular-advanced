@@ -1,1 +1,24 @@
-<p>summary-view works!</p>
+<div class="line">
+  <div class="label">Subtotal</div>
+  <div class="value">
+    {{ vm().subtotal | currency}}
+  </div>
+</div>
+
+@for (item of vm().adjustments; track $index) {
+  <div class="line">
+    <div class="label">
+        {{item.description}}
+    </div>
+    <div class="value" [class.negative]="item.amount < 0">
+      {{ item.amount | currency}}
+    </div>
+  </div>
+}
+
+<div class="line strong">
+  <div class="label">Total</div>
+  <div class="value">
+    {{ vm().total| currency}}
+  </div>
+</div>
