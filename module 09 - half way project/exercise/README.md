@@ -73,11 +73,13 @@ Each picture shows the **same full page**. The green outline marks the part to l
 
 ## The server
 
-The data comes from an API server that is included with the exercise - the same kind of server you used in module 08. Start it in its own terminal and keep it running:
+The data comes from an API server that is included with the exercise, in the [server](./server) folder - the same kind of server you used in module 08. Start it from the exercise folder, in its own terminal, and keep it running:
 
 ```bash
 npm run server
 ```
+
+(or `node server/index.cjs`)
 
 The server listens on `http://localhost:3000`. CORS is enabled, so the Angular app can call it directly. Responses have a small artificial delay, so you can see your loading states.
 

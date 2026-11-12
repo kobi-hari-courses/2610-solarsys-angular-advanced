@@ -1,0 +1,10 @@
+{
+  "name": "solar-dashboard-exercise",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Solar Dashboard half-way project: API server for the exercise.",
+  "scripts": {
+    "server": "node server/index.cjs",
+    "generate-data": "node server/generate-data.cjs"
+  }
+}
